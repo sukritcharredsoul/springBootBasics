@@ -8,12 +8,14 @@ import jakarta.persistence.Id;
 @Entity
 public class Message {
     @Id
-    int id ;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id ;
+
     String text ;
 
+    public Message(){} ;
 
-    public Message(String text,int id) {
-        this.id = id ;
+    public Message(String text) {
         this.text = text;
     }
 

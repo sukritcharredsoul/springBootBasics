@@ -25,8 +25,8 @@ public class HelloController {
     }
 
     @PostMapping("/messages")
-    public Message createMessage(@RequestBody MessageRequest request){
-        return helloService.addMessage(request.getMessage()) ;
+    public MessageResponse createMessage(@RequestBody MessageRequest request){
+        return helloService.addMessage(request) ;
     }
 
     @GetMapping("/messages/{id}")

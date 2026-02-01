@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.MessageRequest;
 import com.example.demo.dto.MessageResponse;
 import com.example.demo.model.Message;
+import com.example.demo.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,31 +12,24 @@ import java.util.List;
 @Service
 public class HelloService {
 
-    private final List<Message> messages = new ArrayList<>() ;
+    private final MessageRepository repository;
 
-    public HelloService(){
-        messages.add(new Message("First",1)) ;
-        messages.add(new Message("second",2)) ;
+    public HelloService(MessageRepository repository){
+       this.repository = repository ;
     }
 
     public List<MessageResponse> getMessages(){
-        return messages.stream().map(m -> new MessageResponse(m.getId(),m.getText())).toList() ;
+        return repository.findAll().stream().map(m -> new MessageResponse(m.getId(),m.getText())).toList() ;
     }
 
-    public Message addMessage(String text){
-        int id = messages.size() + 1 ;
-        Message message = new Message(text,id)  ;
-        messages.add(message) ;
-        return message ;
+    public MessageResponse addMessage(MessageRequest request){
+
+        System.out.println("Received message: " + request.getMessage());
+        Message saved = repository.save(new Message(request.getMessage())) ;
+        return new MessageResponse(saved.getId(),saved.getText()) ;
     }
 
-    public MessageResponse getMessage(int id) {
-        for (Message message : messages) {
-            if (id == message.getId()) {
-                return new MessageResponse(message.getId(), message.getText());
-            }
-        }
-        return new MessageResponse(-1,"Couldn't Find Id") ;
-
+    public MessageResponse getMessage(Integer id) {
+        return (MessageResponse) repository.findById(id).stream().map(m -> new MessageResponse(m.getId(),m.getText()));
     }
 }
