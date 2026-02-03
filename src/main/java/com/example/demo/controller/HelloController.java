@@ -5,6 +5,8 @@ import com.example.demo.model.Message;
 import com.example.demo.dto.MessageRequest;
 import com.example.demo.service.HelloService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +23,9 @@ public class HelloController {
 
 
 
-    @GetMapping("/messages/")
-    public List<MessageResponse> messages(){
-        return helloService.getMessages() ;
+    @GetMapping("/messages")
+    public Page<MessageResponse> messages(Pageable pageable){
+        return helloService.getMessages(pageable) ;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
