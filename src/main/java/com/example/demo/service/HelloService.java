@@ -46,5 +46,10 @@ public class HelloService {
         repository.deleteById(id);
     }
 
+    public List<MessageResponse> search(String keyword){
+        return repository.findByTextContainingIgnoreCase(keyword).stream().map(m -> new MessageResponse(m.getId(),m.getText())).toList() ;
+    }
+
+
 
 }

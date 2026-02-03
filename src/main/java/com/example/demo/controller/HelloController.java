@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -28,14 +29,13 @@ public class HelloController {
         return helloService.getMessages(pageable) ;
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/messages/")
-    public MessageResponse createMessage(@Valid @RequestBody MessageRequest request){
-        return helloService.addMessage(request) ;
-    }
 
-//    @GetMapping("/messages/{id}")
-//    public MessageResponse message(@PathVariable int id){return helloService.getMessage(id);}  ;
+
+    @PostMapping("/messages/")
+    public ResponseEntity<MessageResponse> createMessage(@Valid @RequestBody MessageRequest request){
+        MessageResponse response = helloService.addMessage(request) ;
+        return ResponseEntity.status(HttpStatus.CREATED).body(response) ;
+    }
 
 
     @GetMapping("/messages/{id}")
@@ -45,7 +45,15 @@ public class HelloController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/messages/{id}")
-    public void deleteMessage(@PathVariable Integer id){
+    public ResponseEntity<Void> deleteMessage(@PathVariable Integer id){
         helloService.deleteMessage(id);
+        return ResponseEntity.noContent().build() ;
     }
+
+
+    @GetMapping("/search")
+    public MessageResponse searchMessage(@PathVariable String keyword) {
+        return (MessageResponse) helloService.search(keyword).stream().map(m -> new MessageResponse(m.getId(), m.getText()));
+    }
+
 }
