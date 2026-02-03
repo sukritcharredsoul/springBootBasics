@@ -7,6 +7,7 @@ import java.util.* ;
 public interface MessageRepository extends JpaRepository<Message,Integer> {
 
     List<Message> findByTextContainingIgnoreCase(String keyword) ;
+    List<Message> findByTextNotContaining(String keyword) ;
 
 
 }
