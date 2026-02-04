@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.MessageResponse;
-import com.example.demo.model.Message;
 import com.example.demo.dto.MessageRequest;
 import com.example.demo.service.HelloService;
 import jakarta.validation.Valid;
