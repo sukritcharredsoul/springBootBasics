@@ -1,10 +1,13 @@
 package com.example.demo.service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
@@ -12,11 +15,33 @@ public class JwtService {
     public final String SECRETSTRING = "mYHAklkafajkdfnuiehajdnakduhfauisif9349823rhnaksjdfajsklfL" ;
 
     public String generateToken(String name){
-        return Jwts.builder().setSubject(name).setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 )).
-                signWith(Keys.hmacShaKeyFor(SECRETSTRING.getBytes()), SignatureAlgorithm.HS256).compact() ;
-
+        SecretKey key = Keys.hmacShaKeyFor(SECRETSTRING.getBytes(StandardCharsets.UTF_8));
+        return Jwts.builder().subject(name).issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 ))
+                .signWith(key)
+                .compact() ;
     }
 
+    public String extractUserName(String token){
+        return extractAllClaims(token).getSubject() ;
+    }
 
+    private boolean isTokenExpired(String token){
+        return extractAllClaims(token).getExpiration().before(new Date()) ;
+    }
+
+    public boolean isTokenValid(String token , String username){
+        final String extractedUsername = extractUserName(token) ;
+        return extractedUsername.equals(username) && !isTokenExpired(token) ;
+    }
+
+    private Claims extractAllClaims(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(SECRETSTRING.getBytes(StandardCharsets.UTF_8));
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload() ;
+    }
 
 }
