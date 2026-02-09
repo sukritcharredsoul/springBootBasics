@@ -1,15 +1,13 @@
 package com.example.demo.security;
 
-import com.example.demo.service.CustomerDetailService;
+import com.example.demo.service.CustomDetailService;
 import com.example.demo.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,10 +20,10 @@ import java.io.IOException;
 @Component
 public class jwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwtService ;
-    private CustomerDetailService userDetailService ;
+    private final CustomDetailService userDetailService ;
 
 
-    public jwtAuthenticationFilter(JwtService jwtService, CustomerDetailService userDetailService){
+    public jwtAuthenticationFilter(JwtService jwtService, CustomDetailService userDetailService){
         this.userDetailService = userDetailService ;
         this.jwtService = jwtService ;
     }

@@ -1,11 +1,14 @@
 package com.example.demo.service;
 
 
+import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.Register;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -22,9 +25,13 @@ public class UserService {
 
         String encodedPass = passwordEncoder.encode(request.getPassword()) ;
 
-        User user = new User(request.getName(),request.getAge(),encodedPass,"User") ;
+        User user = new User(request.getName(),request.getAge(),encodedPass,request.getRole()) ;
 
         return userRepository.save(user) ;
 
+    }
+
+    public void delete(Integer id){
+        userRepository.deleteById(id);
     }
 }
